@@ -1,10 +1,11 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <dir.h>
+#include <string.h>
+// #include <dir.h>
 
 #include "WaveFile.h"
-#include <RB_RETVAL.H>
-#include <RB_PCM.H>
+#include "RB_RETVAL.h"
+#include "RB_PCM.h"
 
 
 // ERRORS:
@@ -97,7 +98,7 @@ int writeData(char *fname, unsigned char *data, unsigned int length)
 }
 
 
-WaveFile_Get(WaveFile *wf, unsigned char *data)
+void WaveFile_Get(WaveFile *wf, unsigned char *data)
 {
     memcpy(wf, data, sizeof(WaveFile));
     // point to first chunk
@@ -252,7 +253,6 @@ int main(int argc, char *argv[])
     unsigned short pitch;
     
     // file stuff
-    struct _finddata_t filedata;
     int filehandle;
     FILE *file;
     
@@ -273,7 +273,7 @@ int main(int argc, char *argv[])
 #endif
 
     printf(
-#       include <RB_license.h>
+#       include "RB_license.h"
     );
     printf("\n\n\tRB_SaturnPCM.EXE\n\ta Wave(Windows) <-> PCM(SEGA Saturn)\n\tconversion utility by The Rockin'-B, www.rockin-b.de\n\n");
     printf("\tversion %s\n", version);
@@ -345,27 +345,26 @@ int main(int argc, char *argv[])
     }
     fname_length = strlen(fname);    
 
-    /* need to find out file size of source file */                
-    if((filehandle = _findfirst(fname, &filedata)) == -1) {
-        printf("Error searching file %s!\n", fname);
-        return -1;
-    }
-    _findclose(filehandle);
-        
-    /* then read in the data */
     if((file = fopen(fname, "rb")) == NULL) {
         printf("Error opening file %s!\n", fname);
         return -1;
     }
-    if((from = (void *)malloc(filedata.size)) == NULL) {
+
+    /* need to find out file size of source file */
+    fseek(file, 0, SEEK_END);
+    int size = ftell(file);
+    fseek(file, 9, SEEK_SET);
+
+    if((from = (void *)malloc(size)) == NULL) {
         printf("Not enough memory to read file!\n");
         return -1;
     }
-//    printf("Now reading %i bytes of file %s!\n", filedata.size, fname);
-    temp = fread(from, sizeof(unsigned char), filedata.size, file);
-    if(temp != filedata.size) {
+//    printf("Now reading %i bytes of file %s!\n", size, fname);
+    /* then read in the data */
+    temp = fread(from, sizeof(unsigned char), size, file);
+    if(temp != size) {
         printf("Error while reading file %s!\n", fname);
-        printf("Only %i of %i bytes read!\n", temp, filedata.size);
+        printf("Only %i of %i bytes read!\n", temp, size);
         return -1;
     }
     if(fclose(file) != 0) {
@@ -374,7 +373,7 @@ int main(int argc, char *argv[])
     }
     // only wav conversion on one buffer
     if((ftype != WAV) || (mem == 0)) {  
-        if((to = (void *)malloc(filedata.size)) == NULL) {
+        if((to = (void *)malloc(size)) == NULL) {
             printf("Not enough memory to convert file!\n");
             return -1;
         }
@@ -392,7 +391,7 @@ int main(int argc, char *argv[])
             printf("%s, %ibit resolution, %i samples per second\n", (stereo == 0 ? "mono" : "stereo"), bits, sampleRate);
             
             // convert
-            length = filedata.size;
+            length = size;
             if(PCM_toWAV(to, from, length, stereo, bits) != RETURN_OK) {
                 printf("Error during data conversion!\n");
                 return -1;
@@ -400,7 +399,7 @@ int main(int argc, char *argv[])
 //            printf("Conversion complete:\n");
             // write
             /* got all necessary data */
-            WaveFile_Fin(&waveFile, (stereo == 1 ? 2 : 1), sampleRate, bits, filedata.size/((stereo == 1 ? 2 : 1) * bits / 8));    
+            WaveFile_Fin(&waveFile, (stereo == 1 ? 2 : 1), sampleRate, bits, size/((stereo == 1 ? 2 : 1) * bits / 8));    
             memcpy(fname + fname_length - 3, "wav", 3);
 //            printf("Writing Wave:\n");
             if(WaveFile_Write(fname, &waveFile, to))
@@ -428,9 +427,9 @@ int main(int argc, char *argv[])
             sampleRate = waveFile.format.nSamplesPerSec;
             /* wrong size error message 
              * solve problems with win98 audio recorder */
-            if(waveFile.ch_data.chunksize > (filedata.size - 44)) {
+            if(waveFile.ch_data.chunksize > (size - 44)) {
                 printf("Wrong length in wavefile, taking real file size!\n");
-                length = filedata.size - 44;
+                length = size - 44;
             } else
                 length = waveFile.ch_data.chunksize;
             
@@ -440,7 +439,7 @@ int main(int argc, char *argv[])
                 return -1;
             }
 #else
-            length = filedata.size;
+            length = size;
             if(PCM_toPCM(to, from, &length, &pitch, &stereo, &bits, 0) != RETURN_OK) {
                 printf("Error during data conversion!\n");
                 return -1;

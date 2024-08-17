@@ -42,7 +42,7 @@
 
 #define	PCM_VERSION	"050308"
 
-#include <RB_RETVAL.H>
+#include "RB_RETVAL.h"
 
 #define PCM_toPitch(OCT, FNS)   ((FNS & 0x03FF) | ((OCT & 0xF) << 11))
 #define PCM_toOCT(pitch)        ((pitch & 0x7800) >> 11)
