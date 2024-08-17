@@ -15,9 +15,9 @@
           allowed without obtaining further agreement from author.
 
 */
-#include <mem.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "WaveFile.h"
 
 void WaveFile_Init(WaveFile *wf)

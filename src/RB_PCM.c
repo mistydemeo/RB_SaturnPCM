@@ -38,6 +38,7 @@
 //                                                                                
 
 #include <stdlib.h>
+#include <string.h>
 #include <math.h>
 #include "RB_PCM.h"
 #include "WaveFile.h"
