@@ -1,0 +1,36 @@
+# Project: RB_SaturnPCM
+# Makefile created by Dev-C++ 4.9.9.2
+
+CPP  = g++.exe
+CC   = gcc.exe
+WINDRES = windres.exe
+RES  = OBJ//RB_SaturnPCM_private.res
+OBJ  = OBJ//RB_SaturnPCM.o OBJ//WaveFile.o $(RES)
+LINKOBJ  = OBJ//RB_SaturnPCM.o OBJ//WaveFile.o $(RES)
+LIBS =  -L"C:/Dev-Cpp/lib" libRB.a  
+INCS =  -I"C:/Dev-Cpp/include"  -I"../src" 
+CXXINCS =  -I"C:/Dev-Cpp/include/c++"  -I"C:/Dev-Cpp/include/c++/mingw32"  -I"C:/Dev-Cpp/include/c++/backward"  -I"C:/Dev-Cpp/include"  -I"../src" 
+BIN  = RB_SaturnPCM.exe
+CXXFLAGS = $(CXXINCS)   -fexpensive-optimizations -O2
+CFLAGS = $(INCS)   -fexpensive-optimizations -O2
+RM = rm -f
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before RB_SaturnPCM.exe all-after
+
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CC) $(LINKOBJ) -o "RB_SaturnPCM.exe" $(LIBS)
+
+OBJ//RB_SaturnPCM.o: ../src/RB_SaturnPCM.c
+	$(CC) -c ../src/RB_SaturnPCM.c -o OBJ//RB_SaturnPCM.o $(CFLAGS)
+
+OBJ//WaveFile.o: ../src/WaveFile.c
+	$(CC) -c ../src/WaveFile.c -o OBJ//WaveFile.o $(CFLAGS)
+
+OBJ//RB_SaturnPCM_private.res: RB_SaturnPCM_private.rc 
+	$(WINDRES) -i RB_SaturnPCM_private.rc --input-format=rc -o OBJ//RB_SaturnPCM_private.res -O coff 

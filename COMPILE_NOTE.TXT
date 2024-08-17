@@ -1,0 +1,7 @@
+To compile this app, you'll need some stuff included in the RB library (libRB.a),
+which can be found on my website: http://www.rockin-b.de/librb.html
+
+However, this archive contains a precompiled libRB.a,
+which works when compiling on Windows using Dev-Cpp.
+
+NOTE: the access to the WAVE file header assumes little endian, it has not yet been made compatible with big endian machines like those non-intel ones running MacOS X..
