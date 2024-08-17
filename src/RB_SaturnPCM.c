@@ -353,7 +353,7 @@ int main(int argc, char *argv[])
     /* need to find out file size of source file */
     fseek(file, 0, SEEK_END);
     int size = ftell(file);
-    fseek(file, 9, SEEK_SET);
+    fseek(file, 0, SEEK_SET);
 
     if((from = (void *)malloc(size)) == NULL) {
         printf("Not enough memory to read file!\n");
