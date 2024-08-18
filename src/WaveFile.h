@@ -15,6 +15,9 @@
           allowed without obtaining further agreement from author.
 
 */
+
+#include <inttypes.h>
+
 #ifndef _WAVEFILE_
   #define _WAVEFILE_
 
@@ -23,33 +26,33 @@
 typedef struct {
 /* File header */
   char riff[4];
-  long filesize;
+  int32_t filesize;
   char rifftype[4];
 } RiffHeader;
 
 typedef struct {
   char chunk_id[4];
-  long chunksize;
+  int32_t chunksize;
 } Chunk; 
 
 typedef struct {
-  short wFormatTag;
-  short nChannels;
-  long nSamplesPerSec;
-  long nAvgBytesPerSec;
-  short nBlockAlign;
+  int16_t wFormatTag;
+  int16_t nChannels;
+  int32_t nSamplesPerSec;
+  int32_t nAvgBytesPerSec;
+  int16_t nBlockAlign;
 } WAVEFORMAT;
 
 typedef struct {
 //  WAVEFORMAT wf;
 // new
-  short wFormatTag;
-  short nChannels;
-  long nSamplesPerSec;
-  long nAvgBytesPerSec;
-  short nBlockAlign;
+  int16_t wFormatTag;
+  int16_t nChannels;
+  int32_t nSamplesPerSec;
+  int32_t nAvgBytesPerSec;
+  int16_t nBlockAlign;
 
-  short wBitsPerSample;
+  int16_t wBitsPerSample;
 } PCMWAVEFORMAT;
 
 typedef struct {
